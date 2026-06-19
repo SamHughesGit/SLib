@@ -49,6 +49,14 @@ namespace SLib.Utility
             }
         }
 
+        /// <summary>
+        /// Get the current working directory
+        /// </summary>
+        public static string GetCurrentDirectory()
+        {
+            return Directory.GetCurrentDirectory();
+        }
+
         #endregion
 
         #region Extension Methods
