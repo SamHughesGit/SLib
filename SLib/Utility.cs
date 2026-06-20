@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 
 namespace SLib.Utility
 {
@@ -14,7 +16,7 @@ namespace SLib.Utility
         /// <param name="precise">Whether to include milliseconds in the timestamp</param>
         public static void Log(string text, bool precise = false)
         {
-            string time = precise ? DateTime.Now.ToString("hh:mm:ss:ffff") : DateTime.Now.ToString("hh:mm:ss");
+            string time = precise ? DateTime.Now.ToString("HH:mm:ss:fff") : DateTime.Now.ToString("HH:mm:ss");
             string date = DateTime.Now.ToString("dd/MM/yyyy");
             Console.WriteLine($"[{date}][{time}]: {text}");
         }
@@ -35,7 +37,7 @@ namespace SLib.Utility
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = show_terminal
+                CreateNoWindow = !show_terminal
             };
 
             using (Process process = Process.Start(startInfo))
@@ -113,16 +115,20 @@ namespace SLib.Utility
             bool.TryParse(value, out var result) ? result : defaultValue;
         #endregion
 
+        #endregion
+
+        #region Other utilities
+
         #region IEnumerables
         /// <summary> List out each individual item in a list </summary>
-        public static void ListItems<T>(this IEnumerable<T> collection, bool seperateLines = true, string header = "> ", string seperate = ", ")
+        public static void ListItems<T>(this IEnumerable<T> collection, bool separateLines = true, string header = "> ", string separate = ", ")
         {
             foreach (var item in collection)
             {
-                if (seperateLines) Console.WriteLine($"{header}{item}");
-                else Console.Write($"{item}{seperate}");
+                if (separateLines) Console.WriteLine($"{header}{item}");
+                else Console.Write($"{item}{separate}");
             }
-            if (!seperateLines) Console.WriteLine();
+            if (!separateLines) Console.WriteLine();
         }
 
         /// <summary>
@@ -171,10 +177,6 @@ namespace SLib.Utility
         }
         #endregion
 
-        #endregion
-
-        #region Other utilities
-
         /// <summary>
         /// Is not null, empty, or whitespace
         /// </summary>
@@ -189,7 +191,7 @@ namespace SLib.Utility
         public static T GetRandom<T>(this IList<T> list)
         {
             if (list.Count == 0) return default;
-            return list[new Random().Next(list.Count)];
+            return list[_random.Next(list.Count)];
         }
 
         /// <summary>
@@ -236,15 +238,53 @@ namespace SLib.Utility
         public static T Out<T>(this T value, string prefix = "")
         {
             if (!string.IsNullOrEmpty(prefix))
+                Console.Write(prefix);
+
+            if (value == null)
             {
-                Console.WriteLine($"{prefix}{value}");
-            }
-            else
-            {
-                Console.WriteLine(value);
+                Console.WriteLine("null");
+                return value;
             }
 
-            // Returning the value allows you to inject .Out() inline without breaking expressions
+            Type type = value.GetType();
+
+            // Simple types
+            if (type.IsPrimitive || value is string || value is decimal)
+            {
+                Console.WriteLine(value);
+                return value;
+            }
+
+            var sb = new StringBuilder();
+
+            // Properties
+            var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var prop in props)
+            {
+                try
+                {
+                    object propValue = prop.GetValue(value);
+                    sb.Append($"{prop.Name}: {propValue}, ");
+                }
+                catch
+                {
+                    sb.Append($"{prop.Name}: <error>, ");
+                }
+            }
+
+            // Fields 
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var field in fields)
+            {
+                object fieldValue = field.GetValue(value);
+                sb.Append($"{field.Name}: {fieldValue}, ");
+            }
+
+            if (sb.Length > 2)
+                sb.Length -= 2;
+
+            Console.WriteLine(sb.ToString());
+
             return value;
         }
         #endregion

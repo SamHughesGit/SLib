@@ -13,8 +13,6 @@
         /// <param name="punctuationMultiplier">multiplier for punctuation delay, (delay * puncMutliplier)</param>
         public static void Type(string message, int delay = 90, bool newLine = true, bool showCursor = false, float punctuationMultiplier = 1.4f)
         {
-            Console.CursorVisible = false;
-
             // Store cursor visibilty before changing it so it can be reverted at the end
             bool cursorVisibility = Console.CursorVisible;
             Console.CursorVisible = showCursor;
@@ -49,7 +47,7 @@
         /// <returns>selected option as a string</returns>
         public static string GetOption(string[] options, bool isCaseSensitive = false, string prompt = null)
         {
-            Console.CursorVisible = false;
+            // Console.CursorVisible = false;
 
             // Start input off as invalid option
             string input = "";
@@ -64,7 +62,8 @@
                 if (!(prompt == null || prompt == "")) { Console.WriteLine(prompt); }
 
                 // Get new (standardised) input
-                input = Console.ReadLine().ToLower().Trim();
+                if (!isCaseSensitive) input = Console.ReadLine().ToLower().Trim();
+                else input = Console.ReadLine().Trim();
             }
 
             // Loop ends when inptu is valid, return input
@@ -81,12 +80,10 @@
         /// <returns>selected option as a string</returns>
         public static string GetOptionDropdown(string prompt, string[] options, int delay = 90, string selectedIdentifier = ">", bool colored = false, ConsoleColor color = ConsoleColor.Cyan)
         {
-            Console.CursorVisible = false;
-
             int index = 0;
             bool selected = false;
             int cursorY = Console.CursorTop;
-            Console.CursorVisible = false;
+            // Console.CursorVisible = false;
             ConsoleColor baseColor = Console.ForegroundColor;
 
             Console.SetCursorPosition(0, cursorY);
@@ -99,7 +96,7 @@
                 string text = $"{head} {options[i]}\n";
                 if (colored) Console.ForegroundColor = activeElement ? color : baseColor;
                 if (delay <= 0) Console.Write(text);
-                else Type(text, 90, false);
+                else Type(text, delay, false);
             }
 
             while (!selected)
