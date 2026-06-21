@@ -161,5 +161,21 @@
 
             return input;
         }
+
+        /// <summary>
+        /// Prompt the user for input with a message
+        /// </summary>
+        /// <param name="prompt"></param>
+        /// <param name="allowEmpty"></param>
+        /// <param name="doHeader"></param>
+        /// <param name="head"></param>
+        /// <param name="stripLeadingOrTrailingWhiteSpaces"></param>
+        /// <param name="normalise"></param>
+        /// <returns>user input</returns>
+        public static string PromptIn(string prompt, bool allowEmpty = false, bool doHeader = true, string head = "> ", bool stripLeadingOrTrailingWhiteSpaces = true, bool normalise = true)
+        {
+            Console.WriteLine(prompt);
+            return Input(allowEmpty, doHeader, head, stripLeadingOrTrailingWhiteSpaces, normalise);
+        }
     }
 }

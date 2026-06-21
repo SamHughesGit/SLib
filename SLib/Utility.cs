@@ -16,9 +16,74 @@ namespace SLib.Utility
         /// <param name="precise">Whether to include milliseconds in the timestamp</param>
         public static void Log(string text, bool precise = false)
         {
-            string time = precise ? DateTime.Now.ToString("HH:mm:ss:fff") : DateTime.Now.ToString("HH:mm:ss");
+            string time = GetTime(precise);
             string date = DateTime.Now.ToString("dd/MM/yyyy");
             Console.WriteLine($"[{date}][{time}]: {text}");
+        }
+
+        /// <summary>
+        /// Get the current time as a string, optionally including milliseconds
+        /// </summary>
+        /// <param name="precise"></param>
+        /// <returns></returns>
+        public static string GetTime(bool precise = false)
+        {
+            return precise ? DateTime.Now.ToString("HH:mm:ss:fff") : DateTime.Now.ToString("HH:mm:ss");
+        }
+
+        /// <summary>
+        /// Get the current second as a string
+        /// </summary>
+        /// <returns></returns>
+        public static string GetSecond()
+        {
+            return DateTime.Now.ToString("ss");
+        }
+
+        /// <summary>
+        /// Get the current second as an integer
+        /// </summary>
+        /// <returns></returns>
+        public static int GetSecondInt()
+        {
+            return DateTime.Now.Second;
+        }
+
+        /// <summary>
+        /// Get the current minute as a string
+        /// </summary>
+        /// <returns></returns>
+        public static string GetMinute()
+        {
+            return DateTime.Now.ToString("mm");
+        }
+
+        /// <summary>
+        /// Get the current minute as an integer
+        /// </summary>
+        /// <returns></returns>
+
+        public static int GetMinuteInt()
+        {
+            return DateTime.Now.Minute;
+        }
+
+        /// <summary>
+        /// Get the current hour as a string
+        /// </summary>
+        /// <returns></returns>
+        public static string GetHour()
+        {
+            return DateTime.Now.ToString("HH");
+        }
+
+        /// <summary>
+        /// Get the current hour as an integer
+        /// </summary>
+        /// <returns></returns>
+        public static int GetHourInt()
+        {
+            return DateTime.Now.Hour;
         }
 
         /// <summary>
@@ -121,12 +186,15 @@ namespace SLib.Utility
 
         #region IEnumerables
         /// <summary> List out each individual item in a list </summary>
-        public static void ListItems<T>(this IEnumerable<T> collection, bool separateLines = true, string header = "> ", string separate = ", ")
+        public static void ListItems<T>(this IEnumerable<T> collection, bool separateLines = true, string header = "", string separate = ", ")
         {
-            foreach (var item in collection)
+            int x = collection.Count();
+
+            for (int i = 0; i < x; i++)
             {
+                var item = collection.ElementAt(i);
                 if (separateLines) Console.WriteLine($"{header}{item}");
-                else Console.Write($"{item}{separate}");
+                else Console.Write($"{item}{(i == x - 1 ? "" : separate)}");
             }
             if (!separateLines) Console.WriteLine();
         }
@@ -261,7 +329,7 @@ namespace SLib.Utility
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var prop in props)
             {
-                try
+                try // .GetProperties.GetValue Can throw, so we catch and continue
                 {
                     object propValue = prop.GetValue(value);
                     sb.Append($"{prop.Name}: {propValue}, ");
