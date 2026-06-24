@@ -138,10 +138,10 @@
         /// <param name="allowEmpty">permit empty responses</param>
         /// <param name="doHeader">text before input, e.g. ">" </param>
         /// <param name="head">text header</param>
-        /// <param name="stripLeadingOrTrailingWhiteSpaces">strip leading and trailing whitespace</param>
+        /// <param name="doTrim">strip leading and trailing whitespace</param>
         /// <param name="normalise">convert to lowercase</param>
         /// <returns>user input as a string</returns>
-        public static string Input(bool allowEmpty = false, bool doHeader = true, string head = "> ", bool stripLeadingOrTrailingWhiteSpaces = true, bool normalise = true)
+        public static string Input(bool allowEmpty = false, bool doHeader = true, string head = "> ", bool doTrim = true, bool normalise = true)
         {
             bool cursorVisibility = Console.CursorVisible;
             Console.CursorVisible = true;
@@ -156,11 +156,11 @@
                 input = Console.ReadLine();
             }
 
-            if (stripLeadingOrTrailingWhiteSpaces)
+            if (doTrim)
                 input = input.Trim();
 
             if (normalise)
-                input = input.ToLower();
+                input = input.ToLowerInvariant();
 
             Console.CursorVisible = cursorVisibility;
 
