@@ -143,13 +143,16 @@
         /// <returns>user input as a string</returns>
         public static string Input(bool allowEmpty = false, bool doHeader = true, string head = "> ", bool stripLeadingOrTrailingWhiteSpaces = true, bool normalise = true)
         {
+            bool cursorVisibility = Console.CursorVisible;
             Console.CursorVisible = true;
 
             string? input = null;
 
             while(input == null || (!allowEmpty && input == ""))
             {
-                if (doHeader) Console.Write(head);
+                if (doHeader) 
+                    Console.Write(head);
+
                 input = Console.ReadLine();
             }
 
@@ -158,6 +161,8 @@
 
             if (normalise)
                 input = input.ToLower();
+
+            Console.CursorVisible = cursorVisibility;
 
             return input;
         }
