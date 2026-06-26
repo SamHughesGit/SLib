@@ -1,4 +1,6 @@
-﻿namespace SLib.IO
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace SLib.IO
 {
     public static class IO
     {
@@ -37,6 +39,61 @@
 
             // Restore cursor visibility settings
             Console.CursorVisible = cursorVisibility;
+        }
+
+        public static T CarouselSelector<T>(string decorator = "<>", params T[] items)
+        {
+            // Store cursor visibility so we can disable it
+            // and restore it to its initial state at the end
+            // (if it was false to begin with, we set it to false again at the end, and vice versa)
+            bool cursorVisible = Console.CursorVisible;
+            Console.CursorVisible = false;
+
+            // Store active item (index)
+            int activeIndex = 0;
+
+            // Text decoration
+            int mid = decorator.Length / 2;
+            string tail = decorator[..mid];
+            string head = decorator[mid..];
+
+            while (true)
+            {
+                // Clear the line each time so we can write out the new item on the same line
+                ClearLine();
+                Console.Write($"{tail} {items[activeIndex]} {head}");
+
+                // Read input
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                // Determine action
+                if (keyInfo.Key is ConsoleKey.D or ConsoleKey.RightArrow) activeIndex++;
+                if (keyInfo.Key is ConsoleKey.A or ConsoleKey.LeftArrow) activeIndex--;
+                if (keyInfo.Key is ConsoleKey.Enter) break;
+
+                // Wrap around, if index < 0, index goes to the end
+                // If index > end, index goes to zero
+                if (activeIndex < 0) activeIndex = items.Length - 1;
+                if (activeIndex > items.Length - 1) activeIndex = 0;
+            }
+
+            // Once item has been selected, go to a new line 
+            // and restore cursor visibility
+            Console.WriteLine();
+            Console.CursorVisible = cursorVisible;
+
+            // return the chosen item
+            return items[activeIndex];
+        }
+
+        /// <summary>
+        /// Clear the current line
+        /// </summary>
+        public static void ClearLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, Console.CursorTop);
         }
 
         /// <summary>
@@ -143,28 +200,37 @@
         /// <returns>user input as a string</returns>
         public static string Input(bool allowEmpty = false, bool doHeader = true, string head = "> ", bool doTrim = true, bool normalise = true)
         {
-            bool cursorVisibility = Console.CursorVisible;
+            bool previousCursor = Console.CursorVisible;
             Console.CursorVisible = true;
 
-            string? input = null;
-
-            while(input == null || (!allowEmpty && input == ""))
+            try
             {
-                if (doHeader) 
-                    Console.Write(head);
+                while (true)
+                {
+                    if (doHeader)
+                        Console.Write(head);
 
-                input = Console.ReadLine();
+                    string? input = Console.ReadLine();
+
+                    if (input is null)
+                        continue;
+
+                    if (doTrim)
+                        input = input.Trim();
+
+                    if (normalise)
+                        input = input.ToLowerInvariant();
+
+                    if (!allowEmpty && string.IsNullOrEmpty(input))
+                        continue;
+
+                    return input;
+                }
             }
-
-            if (doTrim)
-                input = input.Trim();
-
-            if (normalise)
-                input = input.ToLowerInvariant();
-
-            Console.CursorVisible = cursorVisibility;
-
-            return input;
+            finally
+            {
+                Console.CursorVisible = previousCursor;
+            }
         }
 
         /// <summary>

@@ -17,74 +17,65 @@ namespace SLib.Utility
         public static void Log(string text, bool precise = false)
         {
             string time = GetTime(precise);
-            string date = DateTime.Now.ToString("dd/MM/yyyy");
+            string date = GetDate();
             Console.WriteLine($"[{date}][{time}]: {text}");
         }
+
+        /// <summary>
+        /// Get the current date as a string, in the format dd/MM/yyyy
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDate() => DateTime.Now.ToString("dd/MM/yyyy");
 
         /// <summary>
         /// Get the current time as a string, optionally including milliseconds
         /// </summary>
         /// <param name="precise"></param>
         /// <returns></returns>
-        public static string GetTime(bool precise = false)
-        {
-            return precise ? DateTime.Now.ToString("HH:mm:ss:fff") : DateTime.Now.ToString("HH:mm:ss");
-        }
+        public static string GetTime(bool precise = false) => precise ? DateTime.Now.ToString("HH:mm:ss:fff") : DateTime.Now.ToString("HH:mm:ss");
 
         /// <summary>
         /// Get the current second as a string
         /// </summary>
         /// <returns></returns>
-        public static string GetSecond()
-        {
-            return DateTime.Now.ToString("ss");
-        }
+        public static string GetSecond() => DateTime.Now.ToString("ss");
+        
 
         /// <summary>
         /// Get the current second as an integer
         /// </summary>
         /// <returns></returns>
-        public static int GetSecondInt()
-        {
-            return DateTime.Now.Second;
-        }
+        public static int GetSecondInt() => DateTime.Now.Second;
+        
 
         /// <summary>
         /// Get the current minute as a string
         /// </summary>
         /// <returns></returns>
-        public static string GetMinute()
-        {
-            return DateTime.Now.ToString("mm");
-        }
+        public static string GetMinute() => DateTime.Now.ToString("mm");
+        
 
         /// <summary>
         /// Get the current minute as an integer
         /// </summary>
         /// <returns></returns>
 
-        public static int GetMinuteInt()
-        {
-            return DateTime.Now.Minute;
-        }
+        public static int GetMinuteInt() => DateTime.Now.Minute;
+        
 
         /// <summary>
         /// Get the current hour as a string
         /// </summary>
         /// <returns></returns>
-        public static string GetHour()
-        {
-            return DateTime.Now.ToString("HH");
-        }
+        public static string GetHour() => DateTime.Now.ToString("HH");
+        
 
         /// <summary>
         /// Get the current hour as an integer
         /// </summary>
         /// <returns></returns>
-        public static int GetHourInt()
-        {
-            return DateTime.Now.Hour;
-        }
+        public static int GetHourInt() => DateTime.Now.Hour;
+        
 
         /// <summary>
         /// Execute a cmd command
@@ -119,10 +110,7 @@ namespace SLib.Utility
         /// <summary>
         /// Get the current working directory
         /// </summary>
-        public static string GetCurrentDirectory()
-        {
-            return Directory.GetCurrentDirectory();
-        }
+        public static string GetCurrentDirectory() => Directory.GetCurrentDirectory();
 
         #endregion
 
@@ -248,10 +236,7 @@ namespace SLib.Utility
         /// <summary>
         /// Is not null, empty, or whitespace
         /// </summary>
-        public static bool HasContent(this string value)
-        {
-            return !string.IsNullOrWhiteSpace(value);
-        }
+        public static bool HasContent(this string value) => !string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         /// Get random element from a list
@@ -265,10 +250,7 @@ namespace SLib.Utility
         /// <summary>
         /// Is a collection null or empty
         /// </summary>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection)
-        {
-            return collection == null || !collection.Any();
-        }
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection) => collection == null || !collection.Any();
 
         /// <summary>
         /// Quickly wrap a text in quotations
