@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -174,7 +175,7 @@ namespace SLib.Utility
 
         #region IEnumerables
         /// <summary> List out each individual item in a list </summary>
-        public static void ListItems<T>(this IEnumerable<T> collection, bool separateLines = true, string header = "", string separate = ", ")
+        public static void List<T>(this IEnumerable<T> collection, bool separateLines = true, string header = "", string separate = ", ")
         {
             int x = collection.Count();
 
@@ -187,56 +188,7 @@ namespace SLib.Utility
             if (!separateLines) Console.WriteLine();
         }
 
-        /// <summary>
-        /// Sum of integers in an enumerable
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
-        public static int Total(this IEnumerable<int> items)
-        {
-            int total = 0;
-            foreach (int item in items)
-            {
-                total += item;
-            }
-            return total;
-        }
-
-        /// <summary>
-        /// Sum of doubles in an enumerable
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
-        public static double Total(this IEnumerable<double> items)
-        {
-            double total = 0;
-            foreach (double item in items)
-            {
-                total += item;
-            }
-            return total;
-        }
-
-        /// <summary>
-        /// Sum of floats in an enumerable
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
-        public static float Total(this IEnumerable<float> items)
-        {
-            float total = 0;
-            foreach (float item in items)
-            {
-                total += item;
-            }
-            return total;
-        }
         #endregion
-
-        /// <summary>
-        /// Is not null, empty, or whitespace
-        /// </summary>
-        public static bool HasContent(this string value) => !string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         /// Get random element from a list

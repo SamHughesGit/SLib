@@ -20,6 +20,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.9" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 
